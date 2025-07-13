@@ -57,11 +57,15 @@ const SortCanvas = () => {
   const setCanvas = (ctx, canvas) => {
     const r = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    if (canvas.width !== r.width * dpr || canvas.height !== r.height * dpr) {
+    if (
+      canvas.width !== r.width * dpr ||
+      canvas.height !== r.height * dpr
+    ) {
       canvas.width = r.width * dpr;
       canvas.height = r.height * dpr;
     }
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    if (ctx.resetTransform) ctx.resetTransform();
+    else ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
     return r;
   };
@@ -97,16 +101,7 @@ const SortCanvas = () => {
     renderBars(ctx, r, layout, toStep.array, base, toStep, false, true);
   };
 
-  const renderBars = (
-    ctx,
-    r,
-    layout,
-    logical,
-    base,
-    meta,
-    final = false,
-    customX = false
-  ) => {
+  const renderBars = (ctx, r, layout, logical, base, meta, final = false, customX = false) => {
     const max = Math.max(...base);
     const w = (r.width - 40) / logical.length;
     const hMax = r.height - 100;
@@ -118,7 +113,6 @@ const SortCanvas = () => {
       const y = r.height - 40 - bh;
 
       const { fill, border, glow, blur } = pick(meta, idx, final);
-
       if (blur) {
         ctx.shadowColor = glow;
         ctx.shadowBlur = blur;
@@ -130,26 +124,25 @@ const SortCanvas = () => {
       g.addColorStop(1, border);
       ctx.fillStyle = g;
       ctx.fillRect(x + 2, y, w - 4, bh);
-
       ctx.shadowBlur = 0;
       ctx.lineWidth = blur ? 3 : 2;
       ctx.strokeStyle = border;
       ctx.strokeRect(x + 2, y, w - 4, bh);
 
-      const fs = Math.min(16, w / 2, bh / 2.5);
-      ctx.font = `${fs}px system-ui,-apple-system,sans-serif`;
+      // Unified number text style
+      const fontSize = 14;
+      ctx.font = `600 ${fontSize}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
       ctx.fillStyle = '#fff';
-      ctx.shadowColor = 'rgba(0,0,0,.8)';
-      ctx.shadowBlur = blur ? 4 : 3;
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      ctx.shadowBlur = 3;
       ctx.shadowOffsetX = 1;
       ctx.shadowOffsetY = 1;
 
-      if (bh > 30 && fs > 10) {
+      if (bh > 30) {
+        ctx.textBaseline = 'middle';
         ctx.fillText(`${v}`, x + w / 2, y + bh / 2);
       } else {
-        // Use same styling for small bars (at bottom)
         ctx.textBaseline = 'top';
         ctx.fillText(`${v}`, x + w / 2, r.height - 32);
       }
@@ -157,7 +150,6 @@ const SortCanvas = () => {
       ctx.shadowBlur = 0;
     });
 
-    // Description Text
     ctx.fillStyle = '#ffffff';
     ctx.font = '16px system-ui, -apple-system, sans-serif';
     ctx.textAlign = 'left';
