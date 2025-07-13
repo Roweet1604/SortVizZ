@@ -118,25 +118,6 @@ npm run test:coverage
 - Optimized canvas drawing for large datasets
 - Lazy loading of algorithm implementations
 
-## Browser Compatibility
-
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-*Note: Camera and voice features require HTTPS in production*
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file for details
-
-## Acknowledgments
-
-- Inspired by VisuAlgo and Algorithm Visualizer
-- Built with modern web technologies
-- Designed for educational purposes
-
 ---
 
 **SortViz** - Making algorithm learning visual and interactive! 🎓✨
