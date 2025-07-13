@@ -2,15 +2,13 @@
 
 Here is the link - https://sort-viz-z.vercel.app/
 
-A beautiful, educational web application that helps students learn sorting algorithms through interactive visualizations. Built with React, TypeScript, and Tailwind CSS.
+A beautiful, educational web application that helps students learn sorting algorithms through interactive visualizations. Built with React, JavaScript, and Tailwind CSS.
 
 ## Features
 
 ### 🎯 Multiple Input Methods
 - **Manual Input**: Enter comma-separated numbers directly
 - **File Upload**: Extract numbers from TXT or PDF files
-- **Camera OCR**: Use your camera to capture and extract numbers from images
-- **Voice Input**: Speak numbers using voice recognition
 - **Random Generator**: Generate random number sets for quick demos
 
 ### 🧮 Sorting Algorithms
@@ -19,10 +17,10 @@ A beautiful, educational web application that helps students learn sorting algor
 - Insertion Sort
 - Merge Sort
 - Quick Sort
-- Heap Sort *(coming soon)*
-- Counting Sort *(coming soon)*
-- Radix Sort *(coming soon)*
-- Bucket Sort *(coming soon)*
+- Heap Sort
+- Counting Sort
+- Radix Sort
+- Bucket Sort
 
 ### 🎬 Interactive Visualization
 - Real-time animated sorting with color-coded operations
@@ -92,51 +90,6 @@ npm run preview
 - **State Management**: React Context API
 - **Build Tool**: Vite
 - **PDF Processing**: PDF.js
-- **OCR**: Tesseract.js
-- **Voice Recognition**: Web Speech API
-
-## Project Structure
-
-```
-src/
-├── components/          # Reusable UI components
-│   ├── Navbar.tsx
-│   ├── Button.tsx
-│   ├── InputField.tsx
-│   ├── FileUpload.tsx
-│   ├── CameraInput.tsx
-│   ├── VoiceInput.tsx
-│   ├── AlgorithmSelect.tsx
-│   ├── SortCanvas.tsx
-│   ├── ControlPanel.tsx
-│   └── StatsPanel.tsx
-├── pages/               # Page components
-│   ├── Home.tsx
-│   └── Visualize.tsx
-├── hooks/               # Custom React hooks
-│   └── useSortVisualizer.ts
-├── utils/               # Utility functions
-│   ├── algorithms/      # Sorting algorithm implementations
-│   ├── parsing/         # Number parsing utilities
-│   └── ocr/            # OCR processing
-├── contexts/            # React Context providers
-│   └── SortContext.tsx
-├── types/               # TypeScript type definitions
-└── App.tsx
-```
-
-## Algorithm Implementations
-
-Each sorting algorithm is implemented as a generator function that yields step-by-step snapshots of the sorting process, enabling smooth visualization and educational insights.
-
-### Example: Bubble Sort
-```typescript
-export const bubbleSort = (arr: number[]): SortStep[] => {
-  const steps: SortStep[] = [];
-  // Implementation with detailed step tracking
-  return steps;
-};
-```
 
 ## Contributing
 
