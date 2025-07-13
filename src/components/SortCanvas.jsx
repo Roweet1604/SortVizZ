@@ -57,13 +57,9 @@ const SortCanvas = () => {
   const setCanvas = (ctx, canvas) => {
     const r = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    if (
-      canvas.width !== r.width * dpr ||
-      canvas.height !== r.height * dpr
-    ) {
-      canvas.width = r.width * dpr;
-      canvas.height = r.height * dpr;
-    }
+    canvas.width = r.width * dpr;
+    canvas.height = r.height * dpr;
+
     if (ctx.resetTransform) ctx.resetTransform();
     else ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
@@ -87,13 +83,14 @@ const SortCanvas = () => {
   const drawTween = (ctx, c, from, toStep, base, prog) => {
     const r = setCanvas(ctx, c);
     clear(ctx, r);
-    const w = (r.width - 40) / toStep.array.length;
+    const totalGap = 4 * toStep.array.length;
+    const w = (r.width - totalGap - 40) / toStep.array.length;
     const targets = new Map();
     toStep.array.forEach((v, i) => {
-      (targets.get(v) || targets.set(v, []).get(v)).push(20 + i * w);
+      (targets.get(v) || targets.set(v, []).get(v)).push(20 + i * (w + 4));
     });
     const layout = from.map((v, i) => {
-      const x0 = 20 + i * w;
+      const x0 = 20 + i * (w + 4);
       const xs = targets.get(v);
       const x1 = xs?.length ? xs.shift() : x0;
       return { value: v, x: x0 + (x1 - x0) * prog };
@@ -103,12 +100,13 @@ const SortCanvas = () => {
 
   const renderBars = (ctx, r, layout, logical, base, meta, final = false, customX = false) => {
     const max = Math.max(...base);
-    const w = (r.width - 40) / logical.length;
+    const totalGap = 4 * logical.length;
+    const w = (r.width - totalGap - 40) / logical.length;
     const hMax = r.height - 100;
 
     layout.forEach((item, idx) => {
       const v = customX ? item.value : item;
-      const x = customX ? item.x : 20 + idx * w;
+      const x = customX ? item.x : 20 + idx * (w + 4);
       const bh = (v / max) * hMax;
       const y = r.height - 40 - bh;
 
@@ -129,63 +127,50 @@ const SortCanvas = () => {
       ctx.strokeStyle = border;
       ctx.strokeRect(x + 2, y, w - 4, bh);
 
-      // Unified number text style
-      const fontSize = 14;
-      ctx.font = `600 ${fontSize}px system-ui, -apple-system, sans-serif`;
+      const fs = Math.max(10, Math.min(20, w * 0.4, bh * 0.4));
+      ctx.font = `bold ${fs}px system-ui,-apple-system,sans-serif`;
       ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.fillStyle = '#fff';
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-      ctx.shadowBlur = 3;
+      ctx.shadowColor = 'rgba(0,0,0,.8)';
+      ctx.shadowBlur = blur ? 4 : 3;
       ctx.shadowOffsetX = 1;
       ctx.shadowOffsetY = 1;
 
-      if (bh > 30) {
-        ctx.textBaseline = 'middle';
+      if (bh > 30 && fs > 10) {
         ctx.fillText(`${v}`, x + w / 2, y + bh / 2);
       } else {
+        ctx.fillStyle = '#edf0f4ff';
+        ctx.shadowBlur = 0;
         ctx.textBaseline = 'top';
-        ctx.fillText(`${v}`, x + w / 2, r.height - 32);
+        ctx.font = `bold ${Math.max(10, Math.min(14, w * 0.35))}px system-ui,-apple-system,sans-serif`;
+        ctx.fillText(`${v}`, x + w / 2, r.height - 28);
       }
 
       ctx.shadowBlur = 0;
     });
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = '16px system-ui, -apple-system, sans-serif';
+    ctx.font = 'bold 18px system-ui,-apple-system,sans-serif';
     ctx.textAlign = 'left';
     ctx.shadowColor = 'rgba(255,255,255,.8)';
     ctx.shadowBlur = 1;
     let d = meta.description || '';
-    if (final) d = `∑ ${d} — Sorting Complete!`;
+    if (final) d = `🎉 ${d} — Sorting Complete!`;
     ctx.fillText(d, 20, 40);
     ctx.shadowBlur = 0;
   };
 
   const pick = (step, i, final) => {
-    let fill = '#6366f1',
-      border = '#4f46e5',
-      glow = 'rgba(99,102,241,.3)',
-      blur = 0;
+    let fill = '#6366f1', border = '#4f46e5', glow = 'rgba(99,102,241,.3)', blur = 0;
     if (step.comparing?.includes(i)) {
-      fill = '#fbbf24';
-      border = '#d97706';
-      glow = 'rgba(251,191,36,.8)';
-      blur = 20;
+      fill = '#fbbf24'; border = '#d97706'; glow = 'rgba(251,191,36,.8)'; blur = 20;
     } else if (step.swapping?.includes(i)) {
-      fill = '#f87171';
-      border = '#dc2626';
-      glow = 'rgba(248,113,113,.9)';
-      blur = 25;
+      fill = '#f87171'; border = '#dc2626'; glow = 'rgba(248,113,113,.9)'; blur = 25;
     } else if (step.sorted?.includes(i) || final) {
-      fill = '#34d399';
-      border = '#059669';
-      glow = 'rgba(52,211,153,.7)';
-      blur = 15;
+      fill = '#34d399'; border = '#059669'; glow = 'rgba(52,211,153,.7)'; blur = 15;
     } else if (step.pivot === i) {
-      fill = '#a78bfa';
-      border = '#7c3aed';
-      glow = 'rgba(167,139,250,.8)';
-      blur = 18;
+      fill = '#a78bfa'; border = '#7c3aed'; glow = 'rgba(167,139,250,.8)'; blur = 18;
     }
     if (step.swapping?.includes(i)) {
       blur = Math.sin(Date.now() * 0.01) * 5 + blur;
