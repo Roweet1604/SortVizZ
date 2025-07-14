@@ -37,9 +37,7 @@ A beautiful, educational web application that helps students learn sorting algor
 
 ## Quick Start
 
-### Prerequisites
-- Node.js 16+ 
-- npm or yarn
+
 
 ### Installation
 
@@ -84,7 +82,7 @@ npm run preview
 
 ## Technology Stack
 
-- **Frontend**: React 18 with TypeScript
+- **Frontend**: React 18 with JavaScript
 - **Styling**: Tailwind CSS
 - **Routing**: React Router v6
 - **State Management**: React Context API
